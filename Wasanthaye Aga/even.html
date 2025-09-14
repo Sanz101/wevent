@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Events Database</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.5/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .event-card {
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .artist-tag {
+            background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+            transition: all 0.2s ease;
+        }
+        .artist-tag:hover {
+            background: linear-gradient(45deg, #ddd6fe, #c4b5fd);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        const eventsData = [
+            // 2022 Events
+            {
+                year: 2022,
+                event: "Geethanjali",
+                date: "-",
+                artists: ["Jaya Sri", "Nadeemal", "Sangeeth"],
+                band: "Wayo",
+                compere: "-"
+            },
+            {
+                year: 2022,
+                event: "Wasanthaye Aga",
+                date: "-",
+                artists: ["Mihindu Ariyarathna", "Athma Liyanage", "Tharindu Damsara"],
+                band: "Jomey (Supun Perera)",
+                compere: "-"
+            },
+            {
+                year: 2022,
+                event: "Sathsara Anurawa",
+                date: "-",
+                artists: ["Kasun Kalhara", "Raini Charuka", "Neckratha", "Nadeemal Perera"],
+                band: "Point 5 (Nadeemal)",
+                compere: "Samare"
+            },
+            {
+                year: 2022,
+                event: "Neethrawani",
+                date: "-",
+                artists: ["Kanchana Anuradhi", "Supun Perera", "Shadika Nisansala", "Chandana Liyanarachchi"],
+                band: "Naada",
+                compere: "-"
+            },
+            
+            // 2023 Events
+            {
+                year: 2023,
+                event: "Indeewari",
+                date: "May-30",
+                artists: ["Umaria", "Shanuka", "Dinesh Gamage"],
+                band: "Daddy",
+                compere: "-"
+            },
+            {
+                year: 2023,
+                event: "Wasanthaye Aga",
+                date: "Aug-15",
+                artists: ["Kasun Kalhara", "Piyath Rajapaksha", "Bachi Susan"],
+                band: "2forty2 (Billy)",
+                compere: "Thisanka"
+            },
+            {
+                year: 2023,
+                event: "Avajana",
+                date: "-",
+                artists: ["Shane Singh", "Lahiru Perera", "Athma Liyanage", "Centigradez"],
+                band: "Line One",
+                compere: "Thisanka"
+            },
+            {
+                year: 2023,
+                event: "Sathsara Anurawa",
+                date: "Dec-12",
+                artists: ["BNS", "Keerth Pasquel", "Uresha Ravihari"],
+                band: "Mariens",
+                compere: "Kalum Srimal"
+            },
+            {
+                year: 2023,
+                event: "Geethanjali",
+                date: "Jun-23",
+                artists: ["Amal Perera", "Ashanthi", "Mihindu Ariyarathna", "Sarith Surith"],
+                band: "The News",
+                compere: "Manuranga"
+            },
+            {
+                year: 2023,
+                event: "Neethrawani",
+                date: "-",
+                artists: ["Samitha Mudunkotuwa", "Danith Sri", "Sanka Dineth", "Divulgane"],
+                band: "Naada",
+                compere: "Indrasiri Sunaweera"
+            },
+            
+            // 2024 Events
+            {
+                year: 2024,
+                event: "Pahan Tharuwa",
+                date: "May-08",
+                artists: ["Amarasiri Peris", "Edward Jayakodi", "Charitha Priyadarshana", "Pradeepa Dharmadasa"],
+                band: "Nalaka Sajee",
+                compere: "Bandula Nanayakkarawasam"
+            },
+            {
+                year: 2024,
+                event: "Indeewari",
+                date: "-",
+                artists: ["T.M. Jayarathna", "Raini Charuka", "Indrachapa Liyanage"],
+                band: "-",
+                compere: "-"
+            },
+            {
+                year: 2024,
+                event: "Wasanthaye Aga",
+                date: "Oct-24",
+                artists: ["Amal Perera", "Centigradz", "Roony"],
+                band: "Avatar",
+                compere: "Dananjaya"
+            },
+            {
+                year: 2024,
+                event: "Avajana",
+                date: "-",
+                artists: ["Shihan Mihiranga", "Samitha Mudunkotuwa", "Chandana Liyanarachchi", "Romesh Sugathapala"],
+                band: "Tunes",
+                compere: "Thisanka"
+            },
+            {
+                year: 2024,
+                event: "Sathsara Anurawa",
+                date: "Jul-16",
+                artists: ["Kasun Kalhara", "Indrachapa", "Umariya", "Shirly Y", "Mihiran"],
+                band: "Naada",
+                compere: "Vishwa Lanka"
+            },
+            {
+                year: 2024,
+                event: "Geethanjali",
+                date: "Nov-19",
+                artists: ["Jaya Sri", "Kanchana Anuradhi", "Sanka Dineth"],
+                band: "Yaka Crew (Chanuka Mora)",
+                compere: "-"
+            },
+            {
+                year: 2024,
+                event: "Neethrawani",
+                date: "Dec-13",
+                artists: ["Senanayaka Weeraliyadda", "Dushyantha Weeraman", "Chandraleka", "Randeer"],
+                band: "Midlane",
+                compere: "Indrasiri Sunaweera"
+            },
+            
+            // 2025 Events
+            {
+                year: 2025,
+                event: "Pahan Tharuwa",
+                date: "-",
+                artists: ["Keerth Pasquel", "Nirosha Virajini", "Karunarathne Divulgane", "Harshana Dissanayake"],
+                band: "Nalaka Sajee",
+                compere: "Dammika Bandara"
+            },
+            {
+                year: 2025,
+                event: "Indeewari",
+                date: "May-21",
+                artists: ["Umara Singhawansha", "Athula Adikari", "Bachi Susan"],
+                band: "Infinity",
+                compere: "Students"
+            }
+        ];
+
+        function EventCard({ event }) {
+            return (
+                <div className="event-card bg-white rounded-xl shadow-lg p-6 h-full border border-gray-100">
+                    <div className="flex justify-between items-start mb-4">
+                        <h2 className="text-2xl font-bold text-indigo-800 mb-2 leading-tight">{event.event}</h2>
+                        <span className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-md">
+                            {event.year}
+                        </span>
+                    </div>
+                    
+                    <div className="space-y-4 mb-4">
+                        <div className="flex items-center bg-gray-50 rounded-lg p-3">
+                            <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-lg">
+                                📅
+                            </span>
+                            <div>
+                                <span className="text-sm font-semibold text-gray-600">Date</span>
+                                <div className="text-gray-800 font-medium">{event.date}</div>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center bg-gray-50 rounded-lg p-3">
+                            <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-lg">
+                                🎵
+                            </span>
+                            <div>
+                                <span className="text-sm font-semibold text-gray-600">Band</span>
+                                <div className="text-gray-800 font-medium">{event.band || 'N/A'}</div>
+                            </div>
+                        </div>
+                        
+                        <div className="flex items-center bg-gray-50 rounded-lg p-3">
+                            <span className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 text-lg">
+                                🎤
+                            </span>
+                            <div>
+                                <span className="text-sm font-semibold text-gray-600">Compere</span>
+                                <div className="text-gray-800 font-medium">
+                                    {event.compere && event.compere !== '-' ? event.compere : 'N/A'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr className="my-4 border-gray-200" />
+                    
+                    <div>
+                        <div className="flex items-center mb-3">
+                            <span className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-lg">
+                                👥
+                            </span>
+                            <span className="text-sm font-semibold text-gray-600">Artists</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {event.artists.map((artist, index) => (
+                                <span 
+                                    key={index}
+                                    className="artist-tag px-3 py-1 rounded-full text-sm font-medium text-gray-700 border border-gray-200"
+                                >
+                                    {artist}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            const [searchTerm, setSearchTerm] = useState('');
+
+            const filteredEvents = useMemo(() => {
+                if (!searchTerm) return eventsData;
+                
+                const search = searchTerm.toLowerCase();
+                return eventsData.filter(event => 
+                    event.event.toLowerCase().includes(search) ||
+                    event.year.toString().includes(search) ||
+                    event.band.toLowerCase().includes(search) ||
+                    event.compere.toLowerCase().includes(search) ||
+                    event.artists.some(artist => artist.toLowerCase().includes(search))
+                );
+            }, [searchTerm]);
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+                    <div className="container mx-auto px-4 py-8 max-w-7xl">
+                        {/* Header */}
+                        <div className="gradient-bg rounded-2xl shadow-2xl p-8 mb-8 text-white">
+                            <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
+                                🎭 University Events Database
+                            </h1>
+                            <p className="text-xl text-center opacity-95 max-w-2xl mx-auto">
+                                Search through our collection of university events, artists, and bands
+                            </p>
+                        </div>
+
+                        {/* Search Bar */}
+                        <div className="mb-8">
+                            <div className="relative max-w-2xl mx-auto">
+                                <input
+                                    type="text"
+                                    placeholder="Search by event name, artist, band, compere, or year..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="search-input w-full px-6 py-4 pl-14 text-lg border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-indigo-200 focus:border-indigo-500 shadow-lg bg-white"
+                                />
+                                <div className="absolute left-5 top-1/2 transform -translate-y-1/2">
+                                    <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Results */}
+                        {filteredEvents.length === 0 ? (
+                            <div className="text-center py-16">
+                                <div className="bg-white border-2 border-gray-200 rounded-2xl p-12 max-w-md mx-auto shadow-lg">
+                                    <div className="text-6xl mb-4">🔍</div>
+                                    <h3 className="text-2xl font-bold text-gray-800 mb-3">No events found</h3>
+                                    <p className="text-gray-600 text-lg">Try adjusting your search terms</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="flex items-center justify-between mb-8">
+                                    <h2 className="text-2xl font-bold text-gray-700">
+                                        Found {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''}
+                                    </h2>
+                                    <div className="text-sm text-gray-500 bg-white px-4 py-2 rounded-full shadow-md">
+                                        {eventsData.length} total events
+                                    </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    {filteredEvents.map((event, index) => (
+                                        <EventCard key={index} event={event} />
+                                    ))}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Footer */}
+                        <div className="mt-16 text-center">
+                            <div className="bg-white rounded-xl shadow-lg p-6 max-w-md mx-auto">
+                                <p className="text-gray-600">
+                                    🎓 University Events Database
+                                </p>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    Built with React & Tailwind CSS
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
